@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carmen Trivia Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .hidden {
+            display: none;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .result {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Carmen Trivia Game</h1>
+    <div id="welcome">
+        <h2>Welcome to the Carmen Trivia Game!</h2>
+        <p>Would you like to take the beginner or advanced version?</p>
+        <button onclick="startGame('beginner')">Beginner</button>
+        <button onclick="startGame('advanced')">Advanced</button>
+    </div>
+
+    <div id="quiz" class="hidden">
+        <h2 id="quizTitle"></h2>
+        <div id="questions"></div>
+        <button onclick="submitAnswers()">Submit Answers</button>
+        <div id="result" class="hidden"></div>
+    </div>
+
+    <script>
+        const beginnerQuestions = [
+            {
+                question: "What is the name of the main character in Carmen?",
+                options: ["Carmen", "Micaëla", "Don José", "Escamillo"],
+                answer: 0,
+                explanation: "Carmen is the main character of the opera."
+            },
+            {
+                question: "What does Carmen work as?",
+                options: ["A soldier", "A factory worker", "A gypsy", "A singer"],
+                answer: 2,
+                explanation: "Carmen is a gypsy in the opera."
+            },
+            {
+                question: "In what country is Carmen set?",
+                options: ["France", "Italy", "Spain", "Germany"],
+                answer: 2,
+                explanation: "The opera is set in Spain."
+            },
+            {
+                question: "What is the famous song sung by Carmen?",
+                options: ["Habanera", "La Traviata", "Nessun Dorma", "O Mio Babbino Caro"],
+                answer: 0,
+                explanation: "The Habanera is one of the most famous arias from Carmen."
+            },
+            {
+                question: "Who is Don José's love interest?",
+                options: ["Carmen", "Micaëla", "Frasquita", "Mercedes"],
+                answer: 1,
+                explanation: "Micaëla is Don José's love interest."
+            }
+        ];
+
+        const advancedQuestions = [
+            {
+                question: "Who composed the opera Carmen?",
+                options: ["Giuseppe Verdi", "Giacomo Puccini", "Georges Bizet", "Wolfgang Amadeus Mozart"],
+                answer: 2,
+                explanation: "Carmen was composed by Georges Bizet."
+            },
+            {
+                question: "What is the main theme of Carmen?",
+                options: ["Revenge", "Love and jealousy", "War", "Betrayal"],
+                answer: 1,
+                explanation: "Love and jealousy are central themes in Carmen."
+            },
+            {
+                question: "In which act does the famous Toreador Song occur?",
+                options: ["Act 1", "Act 2", "Act 3", "Act 4"],
+                answer: 1,
+                explanation: "The Toreador Song is sung in Act 2."
+            },
+            {
+                question: "What is the significance of the card game in the opera?",
+                options: ["A way to decide fates", "A form of entertainment", "To pass time", "A military strategy"],
+                answer: 0,
+                explanation: "The card game is significant as it foretells the fate of Don José."
+            },
+            {
+                question: "Which character is a bullfighter?",
+                options: ["Don José", "Escamillo", "Zuniga", "Micaëla"],
+                answer: 1,
+                explanation: "Escamillo is the famous bullfighter in the opera."
+            }
+        ];
+
+        let selectedQuestions = [];
+        let userAnswers = [];
+        let score = 0;
+
+        function startGame(level) {
+            selectedQuestions = level === 'beginner' ? beginnerQuestions : advancedQuestions;
+            document.getElementById("welcome").classList.add("hidden");
+            document.getElementById("quiz").classList.remove("hidden");
+            document.getElementById("quizTitle").innerText = level.charAt(0).toUpperCase() + level.slice(1) + " Quiz";
+            loadQuestions();
+        }
+
+        function loadQuestions() {
+            const questionsContainer = document.getElementById("questions");
+            questionsContainer.innerHTML = "";
+            selectedQuestions.forEach((q, index) => {
+                const questionHTML = `
+                    <div class="question">
+                        <p>${index + 1}. ${q.question}</p>
+                        ${q.options.map((opt, i) => `
+                            <label>
+                                <input type="radio" name="question${index}" value="${i}">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.innerHTML += questionHTML;
+            });
+        }
+
+        function submitAnswers() {
+            score = 0;
+            userAnswers = [];
+            selectedQuestions.forEach((q, index) => {
+                const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                if (selectedOption) {
+                    const answerIndex = parseInt(selectedOption.value);
+                    userAnswers.push(answerIndex);
+                    if (answerIndex === q.answer) {
+                        score++;
+                    } else {
+                        alert(`Question ${index + 1} is incorrect. ${q.explanation}`);
+                    }
+                } else {
+                    alert(`Question ${index + 1} not answered.`);
+                }
+            });
+            displayResult();
+        }
+
+        function displayResult() {
+            document.getElementById("quiz").classList.add("hidden");
+            const resultContainer = document.getElementById("result");
+            resultContainer.classList.remove("hidden");
+            resultContainer.innerHTML = `You got ${score} out of ${selectedQuestions.length} correct!`;
+        }
+    </script>
+</body>
+</html>
